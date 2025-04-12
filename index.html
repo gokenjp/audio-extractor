@@ -14,79 +14,84 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-music"></i>
-                <h1>音萃</h1>
-            </div>
-            <p class="tagline">一键提取视频中的纯净音频</p>
-        </header>
-        
-        <main>
-            <div id="browserWarning" class="warning" style="display:none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div class="warning-content">
-                    <h3>浏览器兼容提示</h3>
-                    <p>您的浏览器环境不支持必要功能，请:</p>
-                    <ul>
-                        <li>使用最新版Chrome/Edge浏览器</li>
-                        <li>访问HTTPS版本的本网站</li>
-                        <li>启用chrome://flags/#enable-shared-array-buffer</li>
-                    </ul>
+        <div class="card">
+            <header>
+                <div class="logo">
+                    <i class="fas fa-music"></i>
+                    <h1>音萃</h1>
                 </div>
-            </div>
+                <p class="tagline">一键提取视频中的纯净音频</p>
+            </header>
             
-            <div class="upload-card">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <p class="upload-text">拖放视频文件到这里</p>
-                    <p class="upload-subtext">或点击选择文件</p>
-                    <input type="file" id="fileInput" accept="video/*">
-                </div>
-                
-                <div class="file-info" id="fileInfo" style="display:none;">
-                    <i class="fas fa-file-video"></i>
-                    <div class="file-details">
-                        <span id="fileName"></span>
-                        <span id="fileSize"></span>
+            <main>
+                <div id="browserWarning" class="warning" style="display:none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="warning-content">
+                        <h3>浏览器兼容提示</h3>
+                        <p>您的浏览器环境不支持必要功能，请:</p>
+                        <ul>
+                            <li>使用最新版Chrome/Edge浏览器</li>
+                            <li>访问HTTPS版本的本网站</li>
+                            <li>启用chrome://flags/#enable-shared-array-buffer</li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            
-            <button id="extractBtn" class="extract-btn" disabled>
-                <i class="fas fa-magic"></i> 提取音频
-            </button>
-            
-            <div class="status-container">
-                <div id="status" class="status-message">
-                    <i class="fas fa-info-circle"></i>
-                    <span>请上传视频文件</span>
+                
+                <div class="upload-card">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p class="upload-text">拖放视频文件到这里</p>
+                        <p class="upload-subtext">或点击选择文件</p>
+                        <input type="file" id="fileInput" accept="video/*">
+                    </div>
+                    
+                    <div class="file-info" id="fileInfo" style="display:none;">
+                        <i class="fas fa-file-video"></i>
+                        <div class="file-details">
+                            <span id="fileName"></span>
+                            <span id="fileSize"></span>
+                        </div>
+                        <button id="changeFile" class="change-file-btn">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <div class="progress-container" id="progressContainer" style="display:none;">
-                    <div class="progress-bar" id="progressBar"></div>
-                    <div class="progress-text" id="progressText">0%</div>
+                <button id="extractBtn" class="extract-btn" disabled>
+                    <i class="fas fa-magic"></i> 提取音频
+                </button>
+                
+                <div class="status-container">
+                    <div id="status" class="status-message">
+                        <i class="fas fa-info-circle"></i>
+                        <span>请上传视频文件</span>
+                    </div>
+                    
+                    <div class="progress-container" id="progressContainer" style="display:none;">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
                 </div>
-            </div>
+                
+                <div id="ffmpegLoading" class="loading-container" style="display:none;">
+                    <div class="loading-spinner"></div>
+                    <p>正在加载音频引擎...</p>
+                </div>
+                
+                <a id="downloadLink" class="download-btn" style="display:none;">
+                    <i class="fas fa-download"></i> 下载音频文件
+                </a>
+            </main>
             
-            <div id="ffmpegLoading" class="loading-container" style="display:none;">
-                <div class="loading-spinner"></div>
-                <p>正在加载音频引擎...</p>
-            </div>
-            
-            <a id="downloadLink" class="download-btn" style="display:none;">
-                <i class="fas fa-download"></i> 下载音频文件
-            </a>
-        </main>
-        
-        <footer>
-            <p class="tips">
-                <i class="fas fa-lightbulb"></i> 提示：所有处理均在您的浏览器中完成，文件不会上传到服务器
-            </p>
-            <p class="copyright">© 2025 音萃音频工具 - 完全免费使用</p>
-        </footer>
+            <footer>
+                <p class="tips">
+                    <i class="fas fa-lightbulb"></i> 提示：所有处理均在您的浏览器中完成，文件不会上传到服务器
+                </p>
+                <p class="copyright">© 2025 音萃音频工具 - 完全免费使用</p>
+            </footer>
+        </div>
     </div>
 
     <script src="app.js"></script>
