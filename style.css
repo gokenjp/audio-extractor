@@ -1,0 +1,131 @@
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffeeba;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.warning ul {
+    margin: 5px 0 0 20px;
+    padding: 0;
+}
+
+.upload-area {
+    border: 2px dashed #ccc;
+    padding: 30px;
+    text-align: center;
+    margin: 20px 0;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #4285f4;
+}
+
+#extractBtn {
+    background: #4285f4;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#extractBtn:hover {
+    background: #3367d6;
+}
+
+#extractBtn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+#status {
+    margin: 15px 0;
+    min-height: 20px;
+    color: #666;
+    text-align: center;
+}
+
+#downloadLink {
+    display: block;
+    text-align: center;
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #4285f4;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+#downloadLink:hover {
+    background: #f0f7ff;
+}
+
+.progress-container {
+    margin-top: 20px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    height: 20px;
+    position: relative;
+}
+
+.progress-bar {
+    background: #4285f4;
+    height: 100%;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.progress-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    line-height: 20px;
+    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .upload-area {
+        padding: 20px;
+    }
+}
