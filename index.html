@@ -7,7 +7,7 @@
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>极简音频提取工具</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -36,6 +36,11 @@
         <div class="progress-container" id="progressContainer" style="display:none;">
             <div class="progress-bar" id="progressBar"></div>
             <div class="progress-text" id="progressText">0%</div>
+        </div>
+
+        <div id="ffmpegLoading" style="display:none; text-align:center;">
+            <div class="loading-spinner"></div>
+            <div>正在加载音频引擎...</div>
         </div>
     </div>
 

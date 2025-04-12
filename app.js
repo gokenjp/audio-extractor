@@ -14,22 +14,49 @@ const downloadLink = document.getElementById('downloadLink');
 const progressContainer = document.getElementById('progressContainer');
 const progressBar = document.getElementById('progressBar');
 const progressText = document.getElementById('progressText');
+const ffmpegLoading = document.getElementById('ffmpegLoading');
 
 // 初始化FFmpeg
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ 
     log: true,
-    corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
-    mainName: 'main',
-    wasmPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.wasm'
+    corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+    wasmPath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.wasm'
 });
 
 // 存储选中的文件
 let selectedFile = null;
+let isProcessing = false;
+
+// 增强版的FFmpeg加载函数
+async function loadFFmpegWithProgress() {
+    return new Promise((resolve, reject) => {
+        ffmpegLoading.style.display = 'block';
+        statusDiv.textContent = '正在初始化音频引擎...';
+        
+        const timeout = setTimeout(() => {
+            reject(new Error('加载超时，请检查网络连接后刷新页面'));
+        }, 30000);
+
+        ffmpeg.load()
+            .then(() => {
+                clearTimeout(timeout);
+                ffmpegLoading.style.display = 'none';
+                resolve();
+            })
+            .catch(err => {
+                clearTimeout(timeout);
+                ffmpegLoading.style.display = 'none';
+                reject(err);
+            });
+    });
+}
 
 // 点击上传区域触发文件选择
-uploadArea.addEventListener('click', () => {
-    fileInput.click();
+uploadArea.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'INPUT') {
+        fileInput.click();
+    }
 });
 
 // 拖放功能
@@ -46,17 +73,20 @@ uploadArea.addEventListener('dragleave', () => {
 
 uploadArea.addEventListener('drop', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     uploadArea.style.borderColor = '#ccc';
     uploadArea.style.backgroundColor = 'transparent';
     
-    if (e.dataTransfer.files.length) {
+    if (e.dataTransfer.files.length && !isProcessing) {
+        isProcessing = true;
         handleFileSelect(e.dataTransfer.files[0]);
     }
 });
 
 // 文件选择处理
 fileInput.addEventListener('change', () => {
-    if (fileInput.files.length) {
+    if (fileInput.files.length && !isProcessing) {
+        isProcessing = true;
         handleFileSelect(fileInput.files[0]);
     }
 });
@@ -66,12 +96,14 @@ function handleFileSelect(file) {
     // 检查文件类型
     if (!file.type.startsWith('video/')) {
         statusDiv.textContent = '请选择有效的视频文件';
+        isProcessing = false;
         return;
     }
     
     // 检查文件大小（限制50MB）
     if (file.size > 50 * 1024 * 1024) {
         statusDiv.textContent = '文件太大，请选择小于50MB的文件';
+        isProcessing = false;
         return;
     }
     
@@ -86,6 +118,8 @@ function handleFileSelect(file) {
             (${formatFileSize(file.size)})
         </span>
     `;
+    
+    isProcessing = false;
 }
 
 // 提取按钮点击事件
@@ -93,28 +127,43 @@ extractBtn.addEventListener('click', startExtraction);
 
 // 开始提取处理
 async function startExtraction() {
-    if (!selectedFile) return;
+    if (!selectedFile || isProcessing) return;
     
     if (typeof SharedArrayBuffer === 'undefined') {
         statusDiv.innerHTML = '<span style="color:red;">错误：浏览器不支持SharedArrayBuffer</span>';
         return;
     }
     
-    statusDiv.textContent = '正在初始化...';
+    isProcessing = true;
     extractBtn.disabled = true;
     progressContainer.style.display = 'none';
     downloadLink.style.display = 'none';
     
     try {
+        // 检查并加载FFmpeg
+        if (!ffmpeg.isLoaded()) {
+            try {
+                await loadFFmpegWithProgress();
+            } catch (loadError) {
+                console.error('FFmpeg加载失败:', loadError);
+                statusDiv.innerHTML = `
+                    <span style="color:red;">
+                        FFmpeg加载失败!<br>
+                        可能原因:<br>
+                        1. 网络连接问题<br>
+                        2. 浏览器兼容性问题<br>
+                        建议:<br>
+                        - 刷新页面重试<br>
+                        - 使用Chrome/Edge浏览器
+                    </span>
+                `;
+                return;
+            }
+        }
+        
         // 显示进度条
         progressContainer.style.display = 'block';
         updateProgress(0);
-        
-        // 加载FFmpeg
-        if (!ffmpeg.isLoaded()) {
-            statusDiv.textContent = '正在加载FFmpeg引擎(首次使用需下载约25MB)...';
-            await ffmpeg.load();
-        }
         
         // 设置进度回调
         ffmpeg.setProgress(({ ratio }) => {
@@ -129,11 +178,11 @@ async function startExtraction() {
         
         // 执行音频提取命令
         await ffmpeg.run(
-            '-i', fileName,     // 输入文件
-            '-vn',             // 禁用视频流
-            '-acodec', 'libmp3lame',  // 使用MP3编码
-            '-q:a', '2',       // 音频质量(0-9，2=高质量)
-            'output.mp3'       // 输出文件名
+            '-i', fileName,
+            '-vn',
+            '-acodec', 'libmp3lame',
+            '-q:a', '2',
+            'output.mp3'
         );
         
         // 读取结果
@@ -153,8 +202,9 @@ async function startExtraction() {
     } catch (error) {
         console.error(error);
         statusDiv.textContent = `处理失败: ${error.message}`;
+    } finally {
+        isProcessing = false;
         extractBtn.disabled = false;
-        progressContainer.style.display = 'none';
     }
 }
 
