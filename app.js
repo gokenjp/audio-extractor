@@ -121,9 +121,9 @@ function handleFileSelect(file) {
         return;
     }
     
-    // 检查文件大小（限制50MB）
-    if (file.size > 50 * 1024 * 1024) {
-        updateStatus('文件太大，请选择小于50MB的文件', 'warning');
+    // 修改为100MB文件大小限制
+    if (file.size > 100 * 1024 * 1024) {  // 100MB = 100 * 1024 * 1024 bytes
+        updateStatus('文件太大，请选择小于100MB的文件', 'warning');
         isProcessing = false;
         return;
     }
@@ -154,7 +154,7 @@ async function loadFFmpeg() {
     return new Promise((resolve, reject) => {
         const ffmpegLoading = document.getElementById('ffmpegLoading');
         ffmpegLoading.style.display = 'block';
-        updateStatus('正在初始化音频引擎，首次使用需等待数秒...', 'info');
+        updateStatus('正在初始化音频引擎，首次使用需要下载约25MB资源...', 'info');
         
         const timeout = setTimeout(() => {
             reject(new Error('加载超时，请检查网络连接'));
