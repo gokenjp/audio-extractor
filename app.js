@@ -121,9 +121,10 @@ function handleFileSelect(file) {
         return;
     }
     
-    // 修改为100MB文件大小限制
-    if (file.size > 100 * 1024 * 1024) {  // 100MB = 100 * 1024 * 1024 bytes
-        updateStatus('文件太大，请选择小于100MB的文件', 'warning');
+    // 修改为800MB文件大小限制
+    const maxSize = 800 * 1024 * 1024; // 800MB
+    if (file.size > maxSize) {
+        updateStatus(`文件太大，请选择小于${formatFileSize(maxSize)}的文件`, 'warning');
         isProcessing = false;
         return;
     }
@@ -138,6 +139,17 @@ function handleFileSelect(file) {
     document.getElementById('fileName').textContent = file.name;
     document.getElementById('fileSize').textContent = formatFileSize(file.size);
     
+    // 大文件警告提示
+    const fileWarning = document.getElementById('fileWarning');
+    if (file.size > 500 * 1024 * 1024) { // 超过500MB显示警告
+        fileWarning.textContent = '大文件处理可能需要较长时间，建议使用Chrome/Edge浏览器';
+        fileWarning.style.color = 'var(--warning-color)';
+        document.getElementById('memoryWarning').style.display = 'flex';
+    } else {
+        fileWarning.textContent = '';
+        document.getElementById('memoryWarning').style.display = 'none';
+    }
+    
     updateStatus('已选择文件，点击"提取音频"按钮开始', 'info');
     isProcessing = false;
 }
@@ -146,7 +158,8 @@ function handleFileSelect(file) {
 function formatFileSize(bytes) {
     if (bytes < 1024) return bytes + ' bytes';
     else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    else return (bytes / 1048576).toFixed(1) + ' MB';
+    else if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+    else return (bytes / 1073741824).toFixed(1) + ' GB';
 }
 
 // 加载FFmpeg
@@ -208,20 +221,28 @@ async function startExtraction() {
         
         progressContainer.style.display = 'block';
         updateProgress(0, progressBar, progressText);
-        updateStatus('正在处理视频文件...', 'info');
+        
+        // 大文件处理提示
+        if (selectedFile.size > 500 * 1024 * 1024) {
+            updateStatus('大文件处理中，请耐心等待...', 'warning');
+        } else {
+            updateStatus('正在处理视频文件...', 'info');
+        }
         
         // 设置进度回调
         ffmpeg.setProgress(({ ratio }) => {
             const percent = Math.round(ratio * 100);
             updateProgress(percent, progressBar, progressText);
-            updateStatus(`正在处理: ${percent}%`, 'info');
+            updateStatus(`处理中: ${percent}% (${formatFileSize(selectedFile.size)})`, 'info');
         });
         
         // 写入文件到FFmpeg虚拟文件系统
         const fileName = selectedFile.name;
+        updateStatus('正在读取文件...', 'info');
         ffmpeg.FS('writeFile', fileName, await FFmpeg.fetchFile(selectedFile));
         
         // 执行音频提取命令
+        updateStatus('正在提取音频...', 'info');
         await ffmpeg.run(
             '-i', fileName,
             '-vn',
@@ -231,6 +252,7 @@ async function startExtraction() {
         );
         
         // 读取结果
+        updateStatus('正在生成下载链接...', 'info');
         const data = ffmpeg.FS('readFile', 'output.mp3');
         
         // 创建下载链接
@@ -248,6 +270,11 @@ async function startExtraction() {
     } catch (error) {
         console.error('处理失败:', error);
         updateStatus(`处理失败: ${error.message}`, 'error');
+        
+        // 内存不足错误特殊处理
+        if (error.message.includes('memory') || error.message.includes('Memory')) {
+            updateStatus('错误：内存不足，请尝试处理较小文件', 'error');
+        }
     } finally {
         isProcessing = false;
         extractBtn.disabled = false;

@@ -154,6 +154,7 @@ main {
     border-radius: 8px;
     padding: 12px;
     margin-top: 16px;
+    position: relative;
 }
 
 .file-info i {
@@ -166,6 +167,7 @@ main {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    min-width: 0;
 }
 
 #fileName {
@@ -179,6 +181,12 @@ main {
 #fileSize {
     font-size: 12px;
     color: #6c757d;
+}
+
+.file-warning {
+    font-size: 12px;
+    color: var(--warning-color);
+    margin-top: 4px;
 }
 
 .change-file-btn {
@@ -275,6 +283,11 @@ main {
     font-size: 10px;
     line-height: 12px;
     font-weight: bold;
+}
+
+#memoryWarning {
+    display: none;
+    margin-top: 10px;
 }
 
 .loading-container {

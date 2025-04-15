@@ -6,7 +6,7 @@
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>音萃 - 极简音频提取工具</title>
-    <meta name="description" content="免费在线提取视频中的音频，支持MP3/WAV格式，无需注册，无广告，完全在浏览器中处理">
+    <meta name="description" content="免费在线提取视频中的音频，支持800MB以下文件处理，完全在浏览器中完成">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,7 +20,7 @@
                     <i class="fas fa-music"></i>
                     <h1>音萃</h1>
                 </div>
-                <p class="tagline">一键提取视频中的纯净音频</p>
+                <p class="tagline">支持800MB以下视频的音频提取</p>
             </header>
             
             <main>
@@ -43,7 +43,7 @@
                             <i class="fas fa-cloud-upload-alt"></i>
                         </div>
                         <p class="upload-text">拖放视频文件到这里</p>
-                        <p class="upload-subtext">或点击选择文件</p>
+                        <p class="upload-subtext">支持MP4/MOV等格式，最大800MB</p>
                         <input type="file" id="fileInput" accept="video/*">
                     </div>
                     
@@ -52,6 +52,7 @@
                         <div class="file-details">
                             <span id="fileName"></span>
                             <span id="fileSize"></span>
+                            <div id="fileWarning" class="file-warning"></div>
                         </div>
                         <button id="changeFile" class="change-file-btn">
                             <i class="fas fa-exchange-alt"></i>
@@ -75,6 +76,14 @@
                     </div>
                 </div>
                 
+                <div id="memoryWarning" class="warning" style="display:none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="warning-content">
+                        <h3>大文件处理提示</h3>
+                        <p>800MB文件处理需要较长时间，请保持页面开启并耐心等待...</p>
+                    </div>
+                </div>
+                
                 <div id="ffmpegLoading" class="loading-container" style="display:none;">
                     <div class="loading-spinner"></div>
                     <p>正在加载音频引擎...</p>
@@ -87,9 +96,9 @@
             
             <footer>
                 <p class="tips">
-                    <i class="fas fa-lightbulb"></i> 提示：所有处理均在您的浏览器中完成，文件不会上传到服务器
+                    <i class="fas fa-lightbulb"></i> 所有处理均在浏览器中完成，文件不会上传到服务器
                 </p>
-                <p class="copyright">© 2025 音萃音频工具 - 完全免费使用</p>
+                <p class="copyright">© 2025 音萃音频工具 - 支持800MB文件处理</p>
             </footer>
         </div>
     </div>
