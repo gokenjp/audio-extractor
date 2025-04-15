@@ -167,7 +167,7 @@ async function loadFFmpeg() {
     return new Promise((resolve, reject) => {
         const ffmpegLoading = document.getElementById('ffmpegLoading');
         ffmpegLoading.style.display = 'block';
-        updateStatus('正在初始化音频引擎，首次使用需要下载约25MB资源...', 'info');
+        updateStatus('正在初始化音频引擎，首次使用需要等待数秒...', 'info');
         
         const timeout = setTimeout(() => {
             reject(new Error('加载超时，请检查网络连接'));
